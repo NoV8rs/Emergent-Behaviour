@@ -630,8 +630,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Noah Vaters Emergent Behaviour 20241004
-  metroPackageVersion: 
+  metroPackageName: NoahVatersEmergentBehaviour20241004
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -639,7 +639,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Noah Vaters Emergent Behaviour 20241004
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Noah Vaters Emergent Behaviour 20241004
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
