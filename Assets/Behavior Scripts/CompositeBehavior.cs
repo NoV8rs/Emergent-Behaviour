@@ -18,7 +18,7 @@ public class CompositeBehavior : FlockBehavior
         
         Vector2 move = Vector2.zero; // Move vector
         
-        for (int i = 0; i < behaviors.Length; i++) // Loop through the behaviors
+        for (int i = 0; i < behaviors.Length; i++) // Loop through the behaviors, not using foreach because we need the index
         {
             Vector2 partialMove = behaviors[i].CalculateMove(agent, context, flock) * weights[i]; // Calculate the partial move
             if (partialMove != Vector2.zero) // If the partial move is not zero
@@ -31,5 +31,6 @@ public class CompositeBehavior : FlockBehavior
                 move += partialMove; // Add the partial move to the move
             }
         }
+        return move; // Return the move
     }
 }
