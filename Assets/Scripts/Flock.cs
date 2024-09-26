@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline;
 using UnityEngine;
 
 public class Flock : MonoBehaviour
@@ -51,6 +52,34 @@ public class Flock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        foreach (FlockAgent agent in agents) // Loop through the agents
+        {
+            List<Transform> context = GetNearbyObjects(agent); // Get the nearby objects
+            //agent.GetComponentInChildren<SpriteRenderer>().color = Color.Lerp(Color.white, Color.red, context.Count / 6f); // Change the color of the agent, the 6f is the number of agents in the neighbor radius, debugging purposes
+            
+            Vector2 move = behavior.CalculateMove(agent, context, this); // Calculate the move of the agent
+            move *= driveFactor; // Multiply the move by the drive factor
+            if (move.sqrMagnitude > squareMaxSpeed) // If the square of the move is greater than the square of the maximum speed
+            {
+                move = move.normalized * maxSpeed; // Normalize the move and multiply it by the maximum speed
+            }
+            agent.Move(move); // Move the agent
+        }
+    }
+    
+    List<Transform> GetNearbyObjects(FlockAgent agent) // Get the nearby objects
+    {
+        List<Transform> context = new List<Transform>(); // List of nearby objects
+        Collider2D[] contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius); // Get all the colliders in the neighbor radius
         
+        foreach (Collider2D c in contextColliders) // Loop through the colliders
+        {
+            if (c != agent.AgentCollider) // If the collider is not the agent's collider
+            {
+                context.Add(c.transform); // Add the collider to the list of nearby objects
+            }
+        }
+        
+        return context; // Return the list of nearby objects
     }
 }
