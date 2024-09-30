@@ -10,14 +10,14 @@ public class Flock : MonoBehaviour
     List<FlockAgent> agents = new List<FlockAgent>(); // List of agents
     public FlockBehavior behavior; // The behavior of the flock
     
-    [Range(10, 500)] // Range of the number of agents
+    [Range(10, 750)] // Range of the number of agents
     public int startingCount = 250; // The number of agents
     const float agentDensity = 0.08f; // The density of the agents
     
     [Range(1f, 100f)] // Range of the distance of the agents
     public int driveFactor = 10; // The distance of the agents
 
-    [Range(1f, 100f)] // Range of the maximum speed of the agents]
+    [Range(1f, 100f)] // Range of the maximum speed of the agents
     public int maxSpeed = 5; // The maximum speed of the agents
     
     [Range(1f, 10f)] // Range of the neighbor radius of the agents
