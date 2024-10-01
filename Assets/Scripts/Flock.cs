@@ -21,7 +21,7 @@ public class Flock : MonoBehaviour
     public int maxSpeed = 5; // The maximum speed of the agents
     
     [Range(1f, 10f)] // Range of the neighbor radius of the agents
-    public float neighborRadius = 1.5f; // The neighbor radius of the agents
+    public float neighborRadius = 1.5f; // The neighbor radius of the agents, major fps drop if too high, IMPORTANT!.
     [Range(0f, 1f)] // Range of the avoidance radius of the agents
     public float avoidanceRadiusMultiplier = 0.5f; // The avoidance radius of the agents
 
@@ -45,6 +45,7 @@ public class Flock : MonoBehaviour
                 Quaternion.Euler(Vector3.forward * UnityEngine.Random.Range(0f, 360f)), // The rotation of the agent
                 transform); // The parent of the agent
             newAgent.name = "Agent " + i; // The name of the agent
+            newAgent.Initialize(this); // Initialize the agent
             agents.Add(newAgent); // Add the agent to the list of agents
         }   
     }
@@ -54,12 +55,10 @@ public class Flock : MonoBehaviour
     {
         foreach (FlockAgent agent in agents) // Loop through the agents
         {
-            List<Transform> context = GetNearbyObjects(agent); // Get the nearby objects
-            //agent.GetComponentInChildren<SpriteRenderer>().color = Color.Lerp(Color.white, Color.red, context.Count / 6f); // Change the color of the agent, the 6f is the number of agents in the neighbor radius, debugging purposes
-            
+            var (context, obstacles) = GetNearbyObjects(agent); // Get the nearby objects
             Vector2 move = behavior.CalculateMove(agent, context, this); // Calculate the move of the agent
             move *= driveFactor; // Multiply the move by the drive factor
-            if (move.sqrMagnitude > squareMaxSpeed) // If the square of the move is greater than the square of the maximum speed
+            if (move.sqrMagnitude > squareMaxSpeed) // If the square magnitude of the move is greater than the square of the maximum speed
             {
                 move = move.normalized * maxSpeed; // Normalize the move and multiply it by the maximum speed
             }
@@ -67,19 +66,27 @@ public class Flock : MonoBehaviour
         }
     }
     
-    List<Transform> GetNearbyObjects(FlockAgent agent) // Get the nearby objects
+    private (List<Transform>, List<Transform>) GetNearbyObjects(FlockAgent flockAgent) // if you want to do something with the "alien" objects, return a tuple
     {
-        List<Transform> context = new List<Transform>(); // List of nearby objects
-        Collider2D[] contextColliders = Physics2D.OverlapCircleAll(agent.transform.position, neighborRadius); // Get all the colliders in the neighbor radius
-        
-        foreach (Collider2D c in contextColliders) // Loop through the colliders
+        var context = new List<Transform>();
+        var obstacles = new List<Transform>();
+        var contextColliders = Physics2D.OverlapCircleAll(flockAgent.transform.position, neighborRadius);
+
+        foreach (var collider in contextColliders)
         {
-            if (c != agent.AgentCollider) // If the collider is not the agent's collider
+            if (collider == flockAgent.AgentCollider)
+                continue;
+
+            if (collider.transform.parent == transform)
             {
-                context.Add(c.transform); // Add the collider to the list of nearby objects
+                context.Add(collider.transform);
+            }
+            else if (!CompareTag(collider.tag)) // tag them by type (predatorFlock, obstacles, etc) in the editor
+            {
+                obstacles.Add(collider.transform);
             }
         }
-        
-        return context; // Return the list of nearby objects
+
+        return (context, obstacles);
     }
 }

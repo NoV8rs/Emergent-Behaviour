@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Flock/Behavior/Alignment")] // Create a menu for the Alignment behavior
-public class AlignmentBehavior : FlockBehavior
+public class AlignmentBehavior : FilteredFlockBehavior
 {
     public override Vector2 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock) // Calculate the move of the agent
     {

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b19c1a875a87ef44986605d41fe7ba77, type: 3}
   m_Name: Steered Cohension
   m_EditorClassIdentifier: 
+  filter: {fileID: 11400000, guid: c809aa461d32ab64ab0bb95af6a77d4a, type: 2}
   agentSmoothTime: 0.5

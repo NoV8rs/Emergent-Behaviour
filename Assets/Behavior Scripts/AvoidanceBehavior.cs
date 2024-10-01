@@ -2,33 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Flock/Behavior/Avoidance")] // Create a menu for the Avoidance behavior
-public class AvoidanceBehavior : FlockBehavior
+[CreateAssetMenu(menuName = "Flock/Behavior/Avoidance")]
+public class AvoidanceBehavior : FilteredFlockBehavior
 {
-    public override Vector2 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock) // Calculate the move of the agent
+    public override Vector2 CalculateMove(FlockAgent agent, List<Transform> context, Flock flock)
     {
-        // If there are no neighbors, return no adjustment
-        if (context.Count == 0) // If there are no neighbors
-        {
-            return Vector2.zero; // Return no adjustment
-        }
+        //if no neighbors, return no adjustment
+        if (context.Count == 0)
+            return Vector2.zero;
 
-        // Add all points together and average
-        Vector2 avoidanceMove = Vector2.zero; // The avoidance move
-        int nAvoid = 0; // The number of neighbors to avoid
-        foreach (Transform item in context) // Loop through the context
+        //add all points together and average
+        Vector2 avoidanceMove = Vector2.zero;
+        int nAvoid = 0;
+        List<Transform> filteredContext = (filter == null) ? context : filter.Filter(agent, context);
+        foreach (Transform item in filteredContext)
         {
-            if (Vector2.SqrMagnitude(item.position - agent.transform.position) < flock.SquareAvoidanceRadius) // If the square magnitude of the position of the item minus the position of the agent is less than the square avoidance radius
+            Vector3 closestPoint = item.gameObject.GetComponent<Collider2D>().ClosestPoint(agent.transform.position);
+            if (Vector2.SqrMagnitude(closestPoint - agent.transform.position) < flock.SquareAvoidanceRadius)
             {
-                nAvoid++; // Increment the number of neighbors to avoid
-                avoidanceMove += (Vector2)(agent.transform.position - item.position); // Add the position of the agent minus the position of the item to the avoidance move
+                nAvoid++;
+                avoidanceMove += (Vector2)(agent.transform.position - closestPoint);
             }
         }
-        if (nAvoid > 0) // If there are neighbors to avoid
-        {
-            avoidanceMove /= nAvoid; // Divide the avoidance move by the number of neighbors to avoid
-        }
+        if (nAvoid > 0)
+            avoidanceMove /= nAvoid;
 
-        return avoidanceMove; // Return the avoidance move
+        return avoidanceMove;
     }
 }

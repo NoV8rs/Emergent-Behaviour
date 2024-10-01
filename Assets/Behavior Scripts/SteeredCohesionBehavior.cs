@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Flock/Behavior/Steered Cohesion")] // Create a menu for the Steered Cohesion behavior
-public class SteeredCohesionBehavior : FlockBehavior // Using Flock Behavior
+public class SteeredCohesionBehavior : FilteredFlockBehavior // Using Flock Behavior
 {
     // Testing IMPORTANT, could just add the 3 lines at the bottom to CohesionBehavior and not have this script
     Vector2 currentVelocity; // The current velocity
