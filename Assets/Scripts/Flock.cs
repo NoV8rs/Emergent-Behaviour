@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Timeline;
 using UnityEngine;
 
 public class Flock : MonoBehaviour
@@ -65,6 +64,11 @@ public class Flock : MonoBehaviour
                 move = move.normalized * maxSpeed; // Normalize the move and multiply it by the maximum speed
             }
             agent.Move(move); // Move the agent
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
     
