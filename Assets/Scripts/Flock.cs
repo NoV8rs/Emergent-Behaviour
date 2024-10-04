@@ -14,10 +14,10 @@ public class Flock : MonoBehaviour
     public int startingCount = 250; // The number of agents
     const float agentDensity = 0.08f; // The density of the agents
     
-    [Range(1f, 100f)] // Range of the distance of the agents
+    [Range(1f, 10f)] // Range of the distance of the agents
     public int driveFactor = 10; // The distance of the agents
 
-    [Range(1f, 100f)] // Range of the maximum speed of the agents
+    [Range(1f, 500f)] // Range of the maximum speed of the agents
     public int maxSpeed = 5; // The maximum speed of the agents
     
     [Range(1f, 10f)] // Range of the neighbor radius of the agents
@@ -47,7 +47,9 @@ public class Flock : MonoBehaviour
             newAgent.name = "Agent " + i; // The name of the agent
             newAgent.Initialize(this); // Initialize the agent
             agents.Add(newAgent); // Add the agent to the list of agents
-        }   
+        }
+        
+        AddAgents(startingCount);
     }
 
     // Update is called once per frame
@@ -81,12 +83,38 @@ public class Flock : MonoBehaviour
             {
                 context.Add(collider.transform);
             }
-            else if (!CompareTag(collider.tag)) // tag them by type (predatorFlock, obstacles, etc) in the editor
+            else if (!CompareTag(collider.tag)) // if the object is not a flock agent, it is an obstacle
             {
                 obstacles.Add(collider.transform);
             }
         }
 
         return (context, obstacles);
+    }
+
+    public void AddAgents(int count)
+    {
+        if (count > agents.Count)
+        {
+            for (int i = agents.Count; i < count; i++)
+            {
+                FlockAgent newAgent = Instantiate(
+                    agentPrefab,
+                    UnityEngine.Random.insideUnitSphere * startingCount * agentDensity,
+                    Quaternion.Euler(Vector3.forward * UnityEngine.Random.Range(0f, 360f)),
+                    transform);
+                newAgent.name = "Agent " + i;
+                newAgent.Initialize(this);
+                agents.Add(newAgent);
+            }
+        }
+        else if (count < agents.Count)
+        {
+            for (int i = agents.Count - 1; i >= count; i--)
+            {
+                Destroy(agents[i].gameObject);
+                agents.RemoveAt(i);
+            }
+        }
     }
 }
